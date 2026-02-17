@@ -1,4 +1,57 @@
 // ==================== 
+// Auth Management
+// ====================
+
+function checkAuthState() {
+    const user = JSON.parse(localStorage.getItem('seleri_user'));
+
+    // Manage Chat Input State
+    const chatInput = document.getElementById('chatInput');
+    const chatHeader = document.querySelector('.chat-header');
+
+    // Remove existing logout button from header if it exists
+    const existingLogout = document.getElementById('chat-logout-btn');
+    if (existingLogout) existingLogout.remove();
+
+    if (user) {
+        if (chatInput) {
+            chatInput.disabled = false;
+            chatInput.placeholder = "Skriv ditt meddelande...";
+        }
+
+        // Add Logout button to Chat Header
+        if (chatHeader) {
+            const logoutBtn = document.createElement('button');
+            logoutBtn.id = 'chat-logout-btn';
+            logoutBtn.className = 'chat-logout-action';
+            logoutBtn.innerHTML = `
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Logga ut</span>
+            `;
+            logoutBtn.onclick = (e) => {
+                e.stopPropagation();
+                logout();
+            };
+            chatHeader.appendChild(logoutBtn);
+        }
+    } else {
+        if (chatInput) {
+            chatInput.disabled = true;
+            chatInput.placeholder = "Logga in för att använda chatten";
+        }
+    }
+}
+
+function logout() {
+    localStorage.removeItem('seleri_user');
+    window.location.reload();
+}
+
+// ==================== 
 // Navigation
 // ====================
 
@@ -55,21 +108,23 @@ window.addEventListener('scroll', updateActiveLink);
 
 const contactForm = document.getElementById('contactForm');
 
-contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-    const formData = new FormData(contactForm);
-    const data = Object.fromEntries(formData);
+        const formData = new FormData(contactForm);
+        const data = Object.fromEntries(formData);
 
-    // Simulate form submission
-    console.log('Form submitted:', data);
+        // Simulate form submission
+        console.log('Form submitted:', data);
 
-    // Show success message
-    alert('Tack för ditt meddelande! Vi återkommer så snart som möjligt.');
+        // Show success message
+        alert('Tack för ditt meddelande! Vi återkommer så snart som möjligt.');
 
-    // Reset form
-    contactForm.reset();
-});
+        // Reset form
+        contactForm.reset();
+    });
+}
 
 // ==================== 
 // Chat Widget
@@ -84,54 +139,177 @@ const chatInput = document.getElementById('chatInput');
 const quickReplies = document.querySelectorAll('.quick-reply');
 
 // Toggle chat
-chatToggle.addEventListener('click', () => {
-    chatWidget.classList.toggle('active');
-    if (chatWidget.classList.contains('active')) {
-        chatInput.focus();
-        // Remove notification badge
-        const badge = chatToggle.querySelector('.chat-badge');
-        if (badge) {
-            setTimeout(() => {
-                badge.style.display = 'none';
-            }, 300);
+if (chatToggle) {
+    chatToggle.addEventListener('click', () => {
+        chatWidget.classList.toggle('active');
+        if (chatWidget.classList.contains('active')) {
+            const user = JSON.parse(localStorage.getItem('seleri_user'));
+            if (!user) {
+                // Clear messages and show login prompt if not logged in
+                chatMessages.innerHTML = `
+                    <div class="message bot-message">
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">
+                            <p>Hej! För att kunna chatta med mig och få personlig hjälp behöver du logga in.</p>
+                            <a href="login.html" class="btn btn-primary" style="margin-top: 10px; font-size: 0.8rem; padding: 0.5rem 1rem;">Logga in nu</a>
+                        </div>
+                    </div>
+                `;
+            }
+            chatInput.focus();
+            // Remove notification badge
+            const badge = chatToggle.querySelector('.chat-badge');
+            if (badge) {
+                setTimeout(() => {
+                    badge.style.display = 'none';
+                }, 300);
+            }
         }
-    }
-});
+    });
+}
 
 // Quick replies
 quickReplies.forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
+        const user = JSON.parse(localStorage.getItem('seleri_user'));
+        if (!user) {
+            window.location.href = 'login.html';
+            return;
+        }
         const message = button.getAttribute('data-message');
-        sendMessage(message, true);
+        if (message) {
+            addUserMessage(message);
+
+            // Bot "thinking" state
+            const typingId = 'typing-' + Date.now();
+            const typingMsg = document.createElement('div');
+            typingMsg.id = typingId;
+            typingMsg.className = 'message bot-message';
+            typingMsg.innerHTML = `
+                <div class="message-avatar">AI</div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Get real response from Azure
+            const botResponse = await getBotResponse(message);
+
+            // Remove typing indicator and add real message
+            document.getElementById(typingId).remove();
+            addBotMessage(botResponse);
+        }
     });
 });
 
+// Bot response logic – tries Azure RAG first, falls back to keywords
+async function getBotResponse(message) {
+    const user = JSON.parse(localStorage.getItem('seleri_user'));
+    const userName = user ? (user.name.split(' ')[1] || user.name) : '';
+
+    // Step 1: Try Azure AI Search for document context
+    let context = [];
+    try {
+        const searchResults = await AzureIntegration.searchKnowledge(message);
+        if (searchResults && searchResults.length > 0 && !searchResults[0].includes('saknas')) {
+            context = searchResults;
+        }
+    } catch (err) {
+        console.warn('Search unavailable:', err);
+    }
+
+    // Step 2: Try Azure OpenAI (with or without search context)
+    try {
+        const result = await AzureIntegration.generateAnswer(message, context);
+        const answer = typeof result === 'object' ? result.answer : result;
+        const usage = typeof result === 'object' ? result.usage : null;
+
+        if (answer && !answer.includes('nyckel saknas')) {
+            // Show token usage as subtle footer
+            if (usage) {
+                const tokenInfo = `\n\n_📊 Tokens: ${usage.prompt_tokens} in / ${usage.completion_tokens} ut / ${usage.total_tokens} totalt_`;
+                return answer + tokenInfo;
+            }
+            return answer;
+        }
+    } catch (err) {
+        console.warn('OpenAI unavailable:', err);
+    }
+
+    // Step 3: Fallback keyword responses
+    const msg = message.toLowerCase();
+    if ((msg.includes('hej') || msg.includes('hallå')) && msg.length < 20) {
+        return 'Hej' + (userName ? ' ' + userName : '') + '! Hur kan jag hjälpa dig idag?';
+    } else if (msg.includes('tjänst') || msg.includes('service')) {
+        return 'Vi erbjuder: Payroll Business Partner, Payroll Business Controller, Lönehantering och Utbildning.';
+    } else if (msg.includes('kontakt') || msg.includes('ring') || msg.includes('mail')) {
+        return 'Du når oss på:\nTelefon: 054-524 600\nE-post: lon@seleri.se';
+    } else if (msg.includes('tack')) {
+        return 'Varsågod!';
+    }
+    return 'Tack för din fråga! AI-assistenten kunde inte nås just nu. Testa igen om en stund eller fråga om våra tjänster!';
+}
+
+
+
+
 // Send message
-chatForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const message = chatInput.value.trim();
-    if (message) {
-        sendMessage(message, true);
+if (chatForm) {
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = JSON.parse(localStorage.getItem('seleri_user'));
+        if (!user) {
+            window.location.href = 'login.html';
+            return;
+        }
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        addUserMessage(message);
         chatInput.value = '';
-    }
-});
 
-function sendMessage(message, isUser = false) {
-    // Add user message
-    if (isUser) {
-        addMessageToChat(message, true);
+        // Bot "thinking" state
+        const typingId = 'typing-' + Date.now();
+        const typingMsg = document.createElement('div');
+        typingMsg.id = typingId;
+        typingMsg.className = 'message bot-message';
+        typingMsg.innerHTML = `
+            <div class="message-avatar">AI</div>
+            <div class="message-content">
+                <div class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        `;
+        chatMessages.appendChild(typingMsg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        // Simulate bot response
-        setTimeout(() => {
-            const response = getBotResponse(message);
-            addMessageToChat(response, false);
-        }, 1000);
-    } else {
-        addMessageToChat(message, false);
-    }
+        // Get real response from Azure
+        const botResponse = await getBotResponse(message);
+
+        // Remove typing indicator and add real message
+        document.getElementById(typingId).remove();
+        addBotMessage(botResponse);
+    });
+}
+
+// Helper functions to add messages to chat
+function addUserMessage(message) {
+    addMessageToChat(message, true);
+}
+
+function addBotMessage(message) {
+    addMessageToChat(message, false);
 }
 
 function addMessageToChat(message, isUser = false) {
+    if (!chatMessages) return;
+
     const messageDiv = document.createElement('div');
     messageDiv.className = isUser ? 'message user-message' : 'message bot-message';
 
@@ -142,49 +320,75 @@ function addMessageToChat(message, isUser = false) {
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
 
-    const textP = document.createElement('p');
-    textP.textContent = message;
+    if (isUser) {
+        const textP = document.createElement('p');
+        textP.textContent = message;
+        contentDiv.appendChild(textP);
+    } else {
+        // Render markdown for bot messages
+        contentDiv.innerHTML = renderMarkdown(message);
+    }
 
-    contentDiv.appendChild(textP);
     messageDiv.appendChild(avatarDiv);
     messageDiv.appendChild(contentDiv);
 
     chatMessages.appendChild(messageDiv);
-
-    // Scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function getBotResponse(userMessage) {
-    const message = userMessage.toLowerCase();
+// Lightweight markdown → HTML renderer
+function renderMarkdown(text) {
+    if (!text) return '';
 
-    // Simple keyword-based responses
-    if (message.includes('tjänst') || message.includes('service')) {
-        return 'Vi erbjuder flera tjänster: Payroll Business Partner, Payroll Business Controller, Lönehantering och Utbildning. Vilken tjänst är du intresserad av?';
-    } else if (message.includes('payroll business partner')) {
-        return 'Vår Payroll Business Partner-tjänst kombinerar specialistkunskap inom lön med ett konsultativt förhållningssätt. Vi skapar värde för både HR, ekonomi och verksamheten. Vill du veta mer?';
-    } else if (message.includes('payroll business controller')) {
-        return 'Som Payroll Business Controller kombinerar vi djup förståelse för lön med ekonomisk analys och styrning. Vi levererar kunskap och rätt beslutsunderlag till ledningen. Ska vi boka ett möte?';
-    } else if (message.includes('lönehantering')) {
-        return 'Vi erbjuder komplett lönehantering med trygghet och precision. Vi tar rollen som er löneavdelning och säkrar att löneutbetalningen fungerar. Vill du ha en offert?';
-    } else if (message.includes('utbildning')) {
-        return 'Vi erbjuder utbildningar inom Agda PS, för lönespecialister och skräddarsydda program. Vilken typ av utbildning är du intresserad av?';
-    } else if (message.includes('pris') || message.includes('kostnad') || message.includes('offert')) {
-        return 'För att ge dig en korrekt prisuppgift behöver vi veta lite mer om dina behov. Vill du fylla i kontaktformuläret så återkommer vi med en skräddarsydd offert?';
-    } else if (message.includes('möte') || message.includes('boka')) {
-        return 'Utmärkt! Du kan ringa oss på 054-524 600 (vardagar 8.00-17.00) eller skicka ett mail till lon@seleri.se så bokar vi ett möte.';
-    } else if (message.includes('kontakt') || message.includes('ring') || message.includes('mail')) {
-        return 'Du når oss på:\nTelefon: 054-524 600 (vardagar 8.00-17.00)\nE-post: lon@seleri.se\nAdress: Nolgårdsvägen 15, 663 41 Hammarö';
-    } else if (message.includes('företag') || message.includes('hjälp')) {
-        return 'Vi hjälper företag med komplexa löneprocesser. Med över 15 års erfarenhet är vi specialister på att skapa trygghet och effektivitet i lönehanteringen. Vad kan vi hjälpa dig med specifikt?';
-    } else if (message.includes('hej') || message.includes('hallå') || message.includes('tjena')) {
-        return 'Hej! Vad roligt att du hör av dig. Hur kan jag hjälpa dig idag?';
-    } else if (message.includes('tack')) {
-        return 'Varsågod! Finns det något mer jag kan hjälpa dig med?';
-    } else {
-        return 'Tack för ditt meddelande. Jag kan hjälpa dig med information om våra tjänster, priser, eller boka ett möte. Vad är du intresserad av?';
-    }
+    // Escape HTML first (security)
+    let html = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    // Headers: ## Header → <h3>, ### Header → <h4>
+    html = html.replace(/^### (.+)$/gm, '<h4>$1</h4>');
+    html = html.replace(/^## (.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^\*\*(.+?)\*\*$/gm, '<h4>$1</h4>');
+
+    // Bold: **text** → <strong>
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+    // Italic: _text_ → <em> (but not in URLs)
+    html = html.replace(/(?<!\w)_(.+?)_(?!\w)/g, '<em>$1</em>');
+
+    // Bullet lists: - item or • item → <li>
+    html = html.replace(/^[\-•] (.+)$/gm, '<li>$1</li>');
+    // Wrap consecutive <li> in <ul>
+    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+    // Numbered lists: 1. item → <li>
+    html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+
+    // Line breaks: double newline → paragraph break
+    html = html.replace(/\n\n/g, '</p><p>');
+    // Single newlines (not inside lists) → <br>
+    html = html.replace(/\n/g, '<br>');
+
+    // Clean up <br> inside <ul>
+    html = html.replace(/<br><ul>/g, '<ul>');
+    html = html.replace(/<\/ul><br>/g, '</ul>');
+    html = html.replace(/<br><\/ul>/g, '</ul>');
+    html = html.replace(/<br><li>/g, '<li>');
+
+    // Wrap in paragraph
+    html = '<p>' + html + '</p>';
+
+    // Clean empty paragraphs
+    html = html.replace(/<p><\/p>/g, '');
+    html = html.replace(/<p><br><\/p>/g, '');
+
+    return html;
 }
+
+
+// getBotResponse is defined above with Azure RAG integration
+
 
 // ==================== 
 // Smooth Scroll
@@ -236,7 +440,7 @@ document.querySelectorAll('.service-card, .testimonial-card, .about-feature, .vi
 
 const testimonials = [
     {
-        text: "De känns mer som vår egen löneavdelning än som en extern konsult. Vi kan alltid vända oss till Seleri med frågor och funderingar.",
+        text: "De känms mer som vår egen löneavdelning än som en extern konsult. Vi kan alltid vända oss till Seleri med frågor och funderingar.",
         author: "Jenny Svenkvist",
         title: "CFO, Combi Wear Parts AB",
         avatar: "JS"
@@ -283,6 +487,8 @@ function initTestimonials() {
 }
 
 function showTestimonial(index) {
+    if (!typewriterText) return;
+
     // Clear any existing processes
     clearInterval(typingInterval);
     clearTimeout(autoAdvanceTimeout);
@@ -296,13 +502,13 @@ function showTestimonial(index) {
     });
 
     // Hide author immediately and clear text
-    testimonialAuthor.classList.remove('visible');
+    if (testimonialAuthor) testimonialAuthor.classList.remove('visible');
     typewriterText.textContent = '';
 
     // Preparare next author info (but keep hidden)
-    authorAvatar.textContent = data.avatar;
-    authorName.textContent = data.author;
-    authorTitle.textContent = data.title;
+    if (authorAvatar) authorAvatar.textContent = data.avatar;
+    if (authorName) authorName.textContent = data.author;
+    if (authorTitle) authorTitle.textContent = data.title;
 
     // Type text
     let charIndex = 0;
@@ -315,7 +521,7 @@ function showTestimonial(index) {
 
             // Show author with a slight delay for better flow
             setTimeout(() => {
-                testimonialAuthor.classList.add('visible');
+                if (testimonialAuthor) testimonialAuthor.classList.add('visible');
             }, 100);
 
             // Auto-advance after 7 seconds
@@ -324,7 +530,7 @@ function showTestimonial(index) {
                 showTestimonial(next);
             }, 7000);
         }
-    }, 25); // Slightly faster typing for better flow
+    }, 25);
 }
 
 // ==================== 
@@ -334,13 +540,16 @@ function showTestimonial(index) {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Seleri website loaded successfully!');
 
+    checkAuthState();
     initTestimonials();
 
     // Show welcome notification after 3 seconds
     setTimeout(() => {
-        const badge = chatToggle.querySelector('.chat-badge');
-        if (badge && !chatWidget.classList.contains('active')) {
-            badge.style.display = 'flex';
+        if (chatToggle) {
+            const badge = chatToggle.querySelector('.chat-badge');
+            if (badge && !chatWidget.classList.contains('active')) {
+                badge.style.display = 'flex';
+            }
         }
     }, 3000);
 });

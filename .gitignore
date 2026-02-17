@@ -2,6 +2,7 @@
 Thumbs.db
 node_modules/
 .env
+secrets.js
 *.log
 .vscode/
 .agent/

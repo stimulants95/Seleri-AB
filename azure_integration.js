@@ -1,0 +1,231 @@
+/**
+ * Seleri AI - Azure Integration Module
+ * Handles communication with Azure Blob Storage and Azure AI Search.
+ */
+
+const SELERI_BLOB_PREFIX = 'seleri-docs/';
+
+const AzureIntegration = {
+    // Azure Storage Integration
+    async uploadDocument(file) {
+        console.log(`Starting upload for: ${file.name}`);
+
+        const storageAccount = SELERI_SECRETS.azure.storageAccount.trim();
+        const storageContainer = SELERI_SECRETS.azure.storageContainer.trim();
+        let sasToken = (SELERI_SECRETS.azure.storageSasToken || "").trim();
+
+        if (!sasToken) {
+            console.warn("No SAS token found. Simulation mode active.");
+            return new Promise(resolve => setTimeout(() => resolve({ success: true, name: file.name }), 2000));
+        }
+
+        if (!sasToken.startsWith('?')) sasToken = '?' + sasToken;
+
+        const blobUrl = `https://${storageAccount}.blob.core.windows.net/${storageContainer}/${SELERI_BLOB_PREFIX}${encodeURIComponent(file.name)}${sasToken}`;
+
+        try {
+            const response = await fetch(blobUrl, {
+                method: 'PUT',
+                headers: {
+                    'x-ms-blob-type': 'BlockBlob',
+                    'Content-Type': file.type || 'application/octet-stream',
+                    'x-ms-version': '2024-11-04',
+                    'x-ms-date': new Date().toUTCString()
+                },
+                body: file
+            });
+
+            if (response.ok) {
+                return { success: true, name: file.name };
+            } else {
+                const errorText = await response.text();
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(errorText, "application/xml");
+                const azureMessage = xml.querySelector("Message") ? xml.querySelector("Message").textContent : "";
+
+                throw new Error(`${response.status}: ${azureMessage || response.statusText}`);
+            }
+        } catch (error) {
+            console.error("Azure Upload Error:", error);
+            return { success: false, error: error.message };
+        }
+    },
+
+    // List Documents from Azure Blob Storage
+    async listDocuments() {
+        const { storageAccount, storageContainer, storageSasToken } = SELERI_SECRETS.azure;
+        if (!storageSasToken) return [{ name: "Demo_Fil.pdf", size: "1 MB", date: "Idag", status: "Simulerad" }];
+
+        const sasQuery = storageSasToken.startsWith('?') ? storageSasToken.replace('?', '&') : `&${storageSasToken}`;
+        const url = `https://${storageAccount.trim()}.blob.core.windows.net/${storageContainer.trim()}?restype=container&comp=list&prefix=${SELERI_BLOB_PREFIX}${sasQuery}`;
+
+        try {
+            const response = await fetch(url, {
+                headers: { 'x-ms-version': '2024-11-04' }
+            });
+            const text = await response.text();
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(text, "application/xml");
+            const blobs = Array.from(xml.querySelectorAll("Blob"));
+
+            return blobs.map(blob => {
+                const fullName = blob.querySelector("Name").textContent;
+                const name = fullName.startsWith(SELERI_BLOB_PREFIX) ? fullName.slice(SELERI_BLOB_PREFIX.length) : fullName;
+                const properties = blob.querySelector("Properties");
+                const sizeBytes = parseInt(properties.querySelector("Content-Length").textContent);
+                const size = (sizeBytes / (1024 * 1024)).toFixed(1) + " MB";
+                const lastModified = new Date(properties.querySelector("Last-Modified").textContent).toLocaleDateString();
+                return { name, fullName, size, date: lastModified, status: "Indexed" };
+            });
+        } catch (error) {
+            return [];
+        }
+    },
+
+    // Fetch actual document content from Blob Storage
+    async getDocumentContents() {
+        const { storageAccount, storageContainer, storageSasToken } = SELERI_SECRETS.azure;
+        if (!storageSasToken) return [];
+
+        try {
+            const docs = await this.listDocuments();
+            if (!docs || docs.length === 0) return [];
+
+            const contents = [];
+            for (const doc of docs) {
+                try {
+                    let sasToken = storageSasToken;
+                    if (!sasToken.startsWith('?')) sasToken = '?' + sasToken;
+                    const blobUrl = `https://${storageAccount.trim()}.blob.core.windows.net/${storageContainer.trim()}/${SELERI_BLOB_PREFIX}${encodeURIComponent(doc.name)}${sasToken}`;
+
+                    const isPdf = doc.name.toLowerCase().endsWith('.pdf');
+
+                    if (isPdf && typeof pdfjsLib !== 'undefined') {
+                        // Parse PDF using PDF.js
+                        console.log(`Parsing PDF: ${doc.name}`);
+                        const response = await fetch(blobUrl, {
+                            headers: { 'x-ms-version': '2024-11-04' }
+                        });
+                        const arrayBuffer = await response.arrayBuffer();
+                        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                        let fullText = '';
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageText = textContent.items.map(item => item.str).join(' ');
+                            fullText += pageText + '\n';
+                        }
+                        if (fullText.trim().length > 0) {
+                            contents.push(`--- Dokument: ${doc.name} ---\n${fullText.substring(0, 15000)}`);
+                            console.log(`PDF parsed: ${doc.name} (${fullText.length} chars, ${pdf.numPages} pages)`);
+                        }
+                    } else {
+                        // Try reading as text
+                        const response = await fetch(blobUrl, {
+                            headers: { 'x-ms-version': '2024-11-04' }
+                        });
+                        if (response.ok) {
+                            const text = await response.text();
+                            if (text && text.length > 0 && !text.includes('\u0000')) {
+                                contents.push(`--- Dokument: ${doc.name} ---\n${text.substring(0, 15000)}`);
+                                console.log(`Loaded: ${doc.name} (${text.length} chars)`);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Could not load:', doc.name, e);
+                }
+            }
+            return contents;
+        } catch (error) {
+            console.error('Error fetching documents:', error);
+            return [];
+        }
+    },
+
+
+    async searchKnowledge(query) {
+        // Try to get document contents directly from blob storage
+        const docContents = await this.getDocumentContents();
+        if (docContents.length > 0) return docContents;
+
+        // Fallback: try Azure AI Search
+        const { searchEndpoint, searchIndex, searchApiKey } = SELERI_SECRETS.azure;
+        if (!searchApiKey) return [];
+        const url = `${searchEndpoint}/indexes/${searchIndex}/docs/search?api-version=2023-11-01`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'api-key': searchApiKey },
+                body: JSON.stringify({ search: query, top: 3 })
+            });
+            const data = await response.json();
+            return data.value.map(doc => doc.content);
+        } catch (error) { return []; }
+    },
+
+
+    async generateAnswer(query, context) {
+        const { openaiEndpoint, openaiKey, openaiDeployment } = SELERI_SECRETS.azure;
+        if (!openaiKey) return { answer: "AI-nyckel saknas.", usage: null };
+        const url = `${openaiEndpoint}/openai/deployments/${openaiDeployment}/chat/completions?api-version=2024-12-01-preview`;
+
+        // Build system prompt from external config (system-prompt.js)
+        let systemPrompt;
+        if (context && context.length > 0) {
+            systemPrompt = SELERI_SYSTEM_PROMPT.withDocuments(context.join('\n\n'));
+        } else {
+            systemPrompt = SELERI_SYSTEM_PROMPT.withoutDocuments;
+        }
+
+
+        try {
+            const reqBody = {
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: query }
+                ]
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'api-key': openaiKey },
+                body: JSON.stringify(reqBody)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('OpenAI HTTP error:', response.status, errorText);
+                return { answer: null, usage: null };
+            }
+
+            const data = await response.json();
+
+            // Token usage tracking
+            if (data.usage) {
+                const u = data.usage;
+                console.log(`📊 Token-användning: Prompt: ${u.prompt_tokens} | Svar: ${u.completion_tokens} | Totalt: ${u.total_tokens}`);
+                this._lastUsage = u;
+            }
+
+            if (data.error) {
+                console.error('OpenAI error:', data.error);
+                return { answer: null, usage: null };
+            }
+
+            return {
+                answer: data.choices[0].message.content,
+                usage: data.usage || null
+            };
+        } catch (error) {
+            console.error("Azure OpenAI Error:", error);
+            return { answer: null, usage: null };
+        }
+    }
+
+
+};
+
+window.AzureIntegration = AzureIntegration;
+if (typeof module !== 'undefined' && module.exports) { module.exports = AzureIntegration; }
