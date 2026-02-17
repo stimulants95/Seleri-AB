@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleri - Inloggning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            color: #2563eb;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .demo-info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .demo-info h3 {
+            color: #475569;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .demo-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .demo-info li {
+            margin-bottom: 0.25rem;
+        }
+
+        .demo-info code {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>Seleri AI</h1>
+            <p>Logga in för att fortsätta</p>
+        </div>
+
+        <div id="error-message" class="error-message">
+            Felaktigt användarnamn eller lösenord
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label class="form-label">Användarnamn</label>
+                <input type="text" id="username" class="form-input" placeholder="Ange användarnamn" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Lösenord</label>
+                <input type="password" id="password" class="form-input" placeholder="Ange lösenord" required />
+            </div>
+
+            <button type="submit" class="login-btn">Logga in</button>
+        </form>
+
+        <div class="demo-info">
+            <h3>📝 Demo-inloggningar:</h3>
+            <ul>
+                <li><strong>Kund:</strong> <code>SeleriKund</code> / <code>Seleri2026</code></li>
+                <li><strong>Admin:</strong> <code>SeleriAdmin</code> / <code>AdminSeleri2026</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        // Valid credentials
+        const credentials = {
+            customer: {
+                username: 'SeleriKund',
+                password: 'Seleri2026',
+                redirect: 'index.html'
+            },
+            admin: {
+                username: 'SeleriAdmin',
+                password: 'AdminSeleri2026',
+                redirect: 'admin.html'
+            }
+        };
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            // Check customer credentials
+            if (username === credentials.customer.username && password === credentials.customer.password) {
+                sessionStorage.setItem('userRole', 'customer');
+                sessionStorage.setItem('isLoggedIn', 'true');
+                window.location.href = credentials.customer.redirect;
+                return;
+            }
+
+            // Check admin credentials
+            if (username === credentials.admin.username && password === credentials.admin.password) {
+                sessionStorage.setItem('userRole', 'admin');
+                sessionStorage.setItem('isLoggedIn', 'true');
+                window.location.href = credentials.admin.redirect;
+                return;
+            }
+
+            // Invalid credentials
+            errorMessage.classList.add('show');
+            passwordInput.value = '';
+            passwordInput.focus();
+        });
+
+        // Hide error message when user starts typing
+        usernameInput.addEventListener('input', () => {
+            errorMessage.classList.remove('show');
+        });
+
+        passwordInput.addEventListener('input', () => {
+            errorMessage.classList.remove('show');
+        });
+    </script>
+</body>
+
+</html>

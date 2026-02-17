@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleri - Din expertpartner för komplexa löneprocesser</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">Seleri AB</div>
+            <nav class="nav">
+                <a href="#lon">Lön</a>
+                <a href="#om-oss">Om oss</a>
+                <a href="#hjalpcenter">Hjälpcenter</a>
+                <a href="#kontakt">Kontakt</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Din expertpartner för komplexa löneprocesser</h1>
+            <p class="hero-subtitle">Vi erbjuder hållbara och pålitliga lösningar</p>
+            <div class="hero-badges">
+                <div class="badge">
+                    <div class="badge-icon">✓</div>
+                    <div class="badge-text">Expertis</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-icon">✓</div>
+                    <div class="badge-text">Pålitlighet</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-icon">✓</div>
+                    <div class="badge-text">Erfarenhet</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div class="container">
+            <h2>Vi erbjuder hållbara och pålitliga lösningar</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Lön</h3>
+                    <p>Vi erbjuder lönehantering med stor kunskap och passion. Få hjälp av oss med löpande
+                        lönehantering, konsulttjänster som Payroll Business Partner och Payroll Business Controller.</p>
+                    <a href="#" class="btn-link">Utforska →</a>
+                </div>
+                <div class="service-card">
+                    <h3>Utbildning</h3>
+                    <p>Vi erbjuder utbildningar som ger dig och ditt företag trygghet, uppdaterad kunskap och verktyg
+                        för att hantera hela er personaladministration.</p>
+                    <a href="#" class="btn-link">Utforska →</a>
+                </div>
+                <div class="service-card">
+                    <h3>Hjälpcenter</h3>
+                    <p>Här hittar du information till hjälp för användare av Agda och Expense att göra rätt.</p>
+                    <a href="#" class="btn-link">Utforska →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2>Så säger våra kunder</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <p class="quote">"De känns mer som vår egen löneavdelning än som en extern konsult. Vi kan alltid
+                        vända oss till Seleri med frågor och funderingar."</p>
+                    <p class="author">Jenny Svenkvist, CFO, Combi Wear Parts AB</p>
+                </div>
+                <div class="testimonial">
+                    <p class="quote">"Seleri har hjälpt oss att utveckla våra processer och att hitta smartare
+                        arbetssätt."</p>
+                    <p class="author">Elisabeth Tengblad, HR-chef, Spicer Nordiska Kardan</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Seleri AB</h4>
+                    <p>Rätt lön i rätt tid, till rätt kvalitet.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Kontakta oss</h4>
+                    <p>054 – 524 600</p>
+                    <p>info@seleri.se</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Chatbot Widget -->
+    <div id="chatbot-container">
+        <!-- Chat Button -->
+        <button id="chat-toggle" class="chat-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="chat-badge">AI</span>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chat-window" class="chat-window hidden">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <h3>Seleri AI</h3>
+                    <p class="chat-subtitle">Ställ din fråga så ska jag försöka hjälpa dig</p>
+                </div>
+                <button id="chat-close" class="chat-close">×</button>
+            </div>
+
+
+
+            <div id="chat-messages" class="chat-messages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        Hej! Jag är SeleriAI, din digitala assistent för lönehantering. Hur kan jag hjälpa dig idag?
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Skriv din fråga här..." class="chat-input" />
+                <button id="chat-send" class="chat-send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Access Button (Demo Only) -->
+    <a href="admin.html" class="admin-link" title="Admin Panel (Demo)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+            <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
+        </svg>
+    </a>
+
+    <script src="chatbot.js"></script>
+</body>
+
+</html>
