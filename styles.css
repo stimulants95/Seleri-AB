@@ -894,64 +894,61 @@ body {
     background: var(--bg-secondary);
 }
 
-.contact-content {
-    max-width: 1000px;
-    margin: 0 auto var(--spacing-3xl);
-}
-
-.contact-info {
+.contact-banner {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-xl);
-}
-
-.info-card {
-    background: var(--bg-primary);
-    border-radius: var(--radius-lg);
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-3xl);
     padding: var(--spacing-2xl);
-    box-shadow: var(--shadow-md);
-    transition: all var(--transition-base);
-    text-align: center;
-}
-
-.info-card:hover {
-    transform: translateY(-4px);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl);
 }
 
-.info-icon {
-    font-size: 2rem;
-    margin-bottom: var(--spacing-sm);
+.contact-banner-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    color: white;
 }
 
-.info-card h4 {
-    font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-xs);
-    color: var(--text-primary);
+.contact-banner-item svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    opacity: 0.9;
+    margin-top: 4px;
 }
 
-.info-card p {
-    color: var(--text-secondary);
-    margin-bottom: 0.25rem;
+.contact-banner-item > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.info-card a {
-    color: var(--primary-color);
-    text-decoration: none;
+.contact-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
     font-weight: 600;
 }
 
-.info-card a:hover {
-    text-decoration: underline;
+.contact-value {
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity var(--transition-base);
+    font-size: 0.95rem;
 }
 
-.info-note {
-    display: block;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    margin-top: var(--spacing-xs);
+.contact-value:hover {
+    opacity: 0.8;
+}
+
+.contact-note {
+    font-size: 0.75rem;
+    opacity: 0.7;
 }
 
 .contact-form-container {
@@ -1004,9 +1001,7 @@ body {
 /* Team Section */
 
 .team-section {
-    margin-top: var(--spacing-3xl);
-    padding-top: var(--spacing-3xl);
-    border-top: 2px solid rgba(0, 0, 0, 0.05);
+    margin-top: 0;
 }
 
 .team-title {
@@ -1014,8 +1009,15 @@ body {
     font-size: 2rem;
     font-weight: 800;
     text-align: center;
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: var(--spacing-sm);
     color: var(--text-primary);
+}
+
+.team-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-2xl);
 }
 
 .team-grid {
@@ -1486,8 +1488,9 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .contact-info {
+    .contact-banner {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
     }
 
     .footer-content {
