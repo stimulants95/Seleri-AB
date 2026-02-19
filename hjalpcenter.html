@@ -65,11 +65,14 @@
         }
 
         .video-card {
+            display: block;
             background: var(--bg-primary);
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow-md);
             transition: all var(--transition-base);
+            text-decoration: none;
+            position: relative;
         }
 
         .video-card:hover {
@@ -77,19 +80,39 @@
             box-shadow: var(--shadow-xl);
         }
 
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            height: 0;
-            overflow: hidden;
+        .video-card:hover .play-button {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: rgba(197, 176, 134, 0.95);
         }
 
-        .video-wrapper iframe {
+        .video-thumbnail {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background-size: cover;
+            background-position: center;
+            background-color: #000;
+        }
+
+        .play-button {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(168, 139, 87, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-button svg {
+            width: 32px;
+            height: 32px;
+            margin-left: 4px;
         }
 
         @media (max-width: 768px) {
@@ -191,66 +214,114 @@
                 </p>
 
                 <div class="video-grid">
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/bRVDcqmO_vY" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <a href="https://www.youtube.com/watch?v=bRVDcqmO_vY" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/bRVDcqmO_vY/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/W2sdLHlsLPI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=W2sdLHlsLPI" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/W2sdLHlsLPI/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/CAUQXxq_fAI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=CAUQXxq_fAI" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/CAUQXxq_fAI/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/IY6Hrocwe9o" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=IY6Hrocwe9o" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/IY6Hrocwe9o/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/rDao4RryY4M" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=rDao4RryY4M" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/rDao4RryY4M/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/6ngExJ0T72E" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=6ngExJ0T72E" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/6ngExJ0T72E/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/1J6m00EU678" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=1J6m00EU678" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/1J6m00EU678/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/5_CJmsM2c3M" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=5_CJmsM2c3M" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/5_CJmsM2c3M/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/0EyYZmcgoPA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=0EyYZmcgoPA" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/0EyYZmcgoPA/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/9PCMkACABn0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=9PCMkACABn0" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/9PCMkACABn0/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/Ou2UOks8EnI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=Ou2UOks8EnI" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/Ou2UOks8EnI/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube-nocookie.com/embed/70zS6_ZQZRg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=70zS6_ZQZRg" target="_blank" rel="noopener noreferrer" class="video-card">
+                        <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/70zS6_ZQZRg/hqdefault.jpg');">
+                            <div class="play-button">
+                                <svg viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
