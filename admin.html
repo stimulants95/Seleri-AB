@@ -11,7 +11,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <script src="secrets.js"></script>
+    <script src="secrets.js" onerror="console.log('secrets.js not found, using config.js fallback')"></script>
+    <script src="config.js"></script>
     <script src="azure_integration.js"></script>
     <style>
         body {

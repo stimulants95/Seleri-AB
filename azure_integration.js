@@ -5,14 +5,31 @@
 
 const SELERI_BLOB_PREFIX = 'seleri-docs/';
 
+// Use secrets from secrets.js (local) or config.js (GitHub Pages fallback)
+function getAzureConfig() {
+    if (typeof SELERI_SECRETS !== 'undefined') {
+        return SELERI_SECRETS.azure;
+    } else if (typeof SELERI_CONFIG !== 'undefined') {
+        return SELERI_CONFIG.azure;
+    } else {
+        console.error('No Azure configuration found!');
+        return null;
+    }
+}
+
 const AzureIntegration = {
     // Azure Storage Integration
     async uploadDocument(file) {
         console.log(`Starting upload for: ${file.name}`);
 
-        const storageAccount = SELERI_SECRETS.azure.storageAccount.trim();
-        const storageContainer = SELERI_SECRETS.azure.storageContainer.trim();
-        let sasToken = (SELERI_SECRETS.azure.storageSasToken || "").trim();
+        const azureConfig = getAzureConfig();
+        if (!azureConfig) {
+            return { success: false, error: 'Azure configuration missing' };
+        }
+
+        const storageAccount = azureConfig.storageAccount.trim();
+        const storageContainer = azureConfig.storageContainer.trim();
+        let sasToken = (azureConfig.storageSasToken || "").trim();
 
         if (!sasToken) {
             console.warn("No SAS token found. Simulation mode active.");
@@ -53,7 +70,10 @@ const AzureIntegration = {
 
     // List Documents from Azure Blob Storage
     async listDocuments() {
-        const { storageAccount, storageContainer, storageSasToken } = SELERI_SECRETS.azure;
+        const azureConfig = getAzureConfig();
+        if (!azureConfig) return [];
+
+        const { storageAccount, storageContainer, storageSasToken } = azureConfig;
         if (!storageSasToken) return [{ name: "Demo_Fil.pdf", size: "1 MB", date: "Idag", status: "Simulerad" }];
 
         const sasQuery = storageSasToken.startsWith('?') ? storageSasToken.replace('?', '&') : `&${storageSasToken}`;
@@ -84,7 +104,12 @@ const AzureIntegration = {
 
     // Delete Document from Azure Blob Storage
     async deleteDocument(fileName) {
-        const { storageAccount, storageContainer, storageSasToken } = SELERI_SECRETS.azure;
+        const azureConfig = getAzureConfig();
+        if (!azureConfig) {
+            return { success: false, error: 'Azure configuration missing' };
+        }
+
+        const { storageAccount, storageContainer, storageSasToken } = azureConfig;
         if (!storageSasToken) {
             return { success: false, error: 'Ingen SAS-token konfigurerad' };
         }
@@ -129,7 +154,12 @@ const AzureIntegration = {
 
     // Delete Document from Azure AI Search Index
     async deleteFromSearch(fileName) {
-        const { searchEndpoint, searchIndex, searchApiKey } = SELERI_SECRETS.azure;
+        const azureConfig = getAzureConfig();
+        if (!azureConfig) {
+            return { success: true, skipped: true };
+        }
+
+        const { searchEndpoint, searchIndex, searchApiKey } = azureConfig;
 
         // If AI Search not configured, skip silently
         if (!searchApiKey || !searchEndpoint || !searchIndex) {
@@ -187,7 +217,10 @@ const AzureIntegration = {
 
     // Fetch actual document content from Blob Storage
     async getDocumentContents() {
-        const { storageAccount, storageContainer, storageSasToken } = SELERI_SECRETS.azure;
+        const azureConfig = getAzureConfig();
+        if (!azureConfig) return [];
+
+        const { storageAccount, storageContainer, storageSasToken } = azureConfig;
         if (!storageSasToken) return [];
 
         try {
@@ -253,7 +286,10 @@ const AzureIntegration = {
         if (docContents.length > 0) return docContents;
 
         // Fallback: try Azure AI Search
-        const { searchEndpoint, searchIndex, searchApiKey } = SELERI_SECRETS.azure;
+        const azureConfig = getAzureConfig();
+        if (!azureConfig) return [];
+
+        const { searchEndpoint, searchIndex, searchApiKey } = azureConfig;
         if (!searchApiKey) return [];
         const url = `${searchEndpoint}/indexes/${searchIndex}/docs/search?api-version=2023-11-01`;
 
@@ -270,7 +306,12 @@ const AzureIntegration = {
 
 
     async generateAnswer(query, context) {
-        const { openaiEndpoint, openaiKey, openaiDeployment } = SELERI_SECRETS.azure;
+        const azureConfig = getAzureConfig();
+        if (!azureConfig) {
+            return { answer: "Azure configuration saknas.", usage: null };
+        }
+
+        const { openaiEndpoint, openaiKey, openaiDeployment } = azureConfig;
         if (!openaiKey) return { answer: "AI-nyckel saknas.", usage: null };
         const url = `${openaiEndpoint}/openai/deployments/${openaiDeployment}/chat/completions?api-version=2024-12-01-preview`;
 
