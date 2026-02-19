@@ -1,0 +1,15 @@
+.DS_Store
+Thumbs.db
+node_modules/
+.env
+*.log
+.vscode/
+.agent/
+.gemini/
+.brain/
+.tmp/
+tmp/
+*.tmp
+*.temp
+.claude/
+secrets.js

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karriär - Seleri AB</title>
+    <meta name="description"
+        content="Bli en del av vårt team på Seleri. Vi söker ständigt efter passionerade lönekonsulter som vill utvecklas i en modern och trygg miljö.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="service-pages.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .career-hero {
+            padding: var(--spacing-3xl) 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .career-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-xl);
+            margin: var(--spacing-2xl) 0;
+        }
+
+        .value-card {
+            text-align: center;
+            padding: var(--spacing-xl);
+        }
+
+        .value-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+            color: white;
+        }
+
+        .open-positions {
+            background: var(--bg-secondary);
+            padding: var(--spacing-3xl) 0;
+            border-radius: var(--radius-lg);
+        }
+
+        .position-card {
+            background: var(--bg-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-base);
+        }
+
+        .position-card:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-apply {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
+                    <svg class="logo-symbol" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M45 85C45 85 40 60 40 40C40 30 45 20 50 15C55 20 60 30 60 40C60 60 55 85 55 85"
+                            stroke="currentColor" stroke-width="8" stroke-linecap="round" />
+                        <path d="M35 80C35 80 25 65 25 50C25 40 30 30 35 25" stroke="currentColor" stroke-width="6"
+                            stroke-linecap="round" />
+                        <path d="M65 80C65 80 75 65 75 50C75 40 70 30 65 25" stroke="currentColor" stroke-width="6"
+                            stroke-linecap="round" />
+                        <circle cx="50" cy="15" r="4" fill="currentColor" />
+                        <circle cx="35" cy="25" r="3" fill="currentColor" />
+                        <circle cx="65" cy="25" r="3" fill="currentColor" />
+                    </svg>
+                    <span class="logo-text">Seleri</span>
+                </a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html#hem" class="nav-link">Hem</a>
+                <a href="index.html#tjanster" class="nav-link">Tjänster</a>
+                <a href="index.html#om-oss" class="nav-link">Om oss</a>
+                <a href="index.html#kontakt" class="nav-link">Kontakt</a>
+                <a href="karriar.html" class="nav-link active">Karriär</a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="breadcrumb" style="margin-top: 100px;">
+            <a href="index.html">Hem</a> / <span>Karriär</span>
+        </div>
+
+        <header class="career-hero">
+            <h1>Jobba hos oss</h1>
+            <p>Vill du utvecklas på en auktoriserad lönebyrå med hjärtat på rätt ställe?</p>
+        </header>
+
+        <section class="career-content">
+            <h2 style="text-align: center;">Varför Seleri?</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"
+                            height="24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h3>Teamkänsla</h3>
+                    <p>Vi tror på samarbete och stöttar varandra i alla projekt. Hos oss är ingen ensam.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"
+                            height="24">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Utveckling</h3>
+                    <p>Vi satsar på kontinuerlig utbildning och ger dig möjligheten att växa i din yrkesroll.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"
+                            height="24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Trygghet</h3>
+                    <p>En modern arbetsplats med fokus på balans mellan jobb och fritid.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="open-positions">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: var(--spacing-xl);">Lediga tjänster</h2>
+                <div class="position-card">
+                    <div>
+                        <h3>Senior Lönekonsult</h3>
+                        <p>Hammarö / Distans | Heltid</p>
+                    </div>
+                    <a href="mailto:lon@seleri.se" class="btn-apply">Sök nu</a>
+                </div>
+                <div class="position-card">
+                    <div>
+                        <h3>Löneassistent</h3>
+                        <p>Hammarö | Heltid</p>
+                    </div>
+                    <a href="mailto:lon@seleri.se" class="btn-apply">Sök nu</a>
+                </div>
+                <div class="position-card">
+                    <div>
+                        <h3>Spontanansökan</h3>
+                        <p>Vi letar alltid efter talanger!</p>
+                    </div>
+                    <a href="mailto:lon@seleri.se" class="btn-apply">Skicka CV</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: var(--spacing-3xl);">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg class="logo-symbol" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M45 85C45 85 40 60 40 40C40 30 45 20 50 15C55 20 60 30 60 40C60 60 55 85 55 85"
+                                stroke="currentColor" stroke-width="8" stroke-linecap="round" />
+                            <path d="M35 80C35 80 25 65 25 50C25 40 30 30 35 25" stroke="currentColor" stroke-width="6"
+                                stroke-linecap="round" />
+                            <path d="M65 80C65 80 75 65 75 50C75 40 70 30 65 25" stroke="currentColor" stroke-width="6"
+                                stroke-linecap="round" />
+                            <circle cx="50" cy="15" r="4" fill="currentColor" />
+                            <circle cx="35" cy="25" r="3" fill="currentColor" />
+                            <circle cx="65" cy="25" r="3" fill="currentColor" />
+                        </svg>
+                        <span class="logo-text" style="color: var(--primary-color);">Seleri</span>
+                    </div>
+                    <p class="footer-tagline">Rätt lön i rätt tid, till rätt kvalitet.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Tjänster</h4>
+                        <a href="payroll-business-partner.html">Payroll Business Partner</a>
+                        <a href="payroll-business-controller.html">Payroll Business Controller</a>
+                        <a href="lonehantering.html">Lönehantering</a>
+                        <a href="utbildning.html">Utbildning</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Företag</h4>
+                        <a href="index.html#om-oss">Om oss</a>
+                        <a href="index.html#kontakt">Kontakt</a>
+                        <a href="hjalpcenter.html">Hjälpcenter</a>
+                        <a href="karriar.html">Karriär</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Kontakt</h4>
+                        <a href="tel:054524600">054-524 600</a>
+                        <a href="mailto:lon@seleri.se">lon@seleri.se</a>
+                        <a href="https://maps.google.com/?q=Nolgårdsvägen+15,+663+41+Hammarö" target="_blank"
+                            rel="noopener noreferrer">Hammarö</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Juridiskt</h4>
+                        <a href="integritetspolicy.html">Integritetspolicy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Seleri AB. Alla rättigheter förbehållna.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
