@@ -895,29 +895,28 @@ body {
 }
 
 .contact-content {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: var(--spacing-3xl);
-    margin-bottom: var(--spacing-3xl);
+    max-width: 1000px;
+    margin: 0 auto var(--spacing-3xl);
 }
 
 .contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-xl);
 }
 
 .info-card {
     background: var(--bg-primary);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-2xl);
     box-shadow: var(--shadow-md);
     transition: all var(--transition-base);
+    text-align: center;
 }
 
 .info-card:hover {
-    transform: translateX(8px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
 }
 
 .info-icon {
@@ -1487,7 +1486,7 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .contact-content {
+    .contact-info {
         grid-template-columns: 1fr;
     }
 
