@@ -82,6 +82,109 @@ const AzureIntegration = {
         }
     },
 
+    // Delete Document from Azure Blob Storage
+    async deleteDocument(fileName) {
+        const { storageAccount, storageContainer, storageSasToken } = SELERI_SECRETS.azure;
+        if (!storageSasToken) {
+            return { success: false, error: 'Ingen SAS-token konfigurerad' };
+        }
+
+        let sasToken = storageSasToken;
+        if (!sasToken.startsWith('?')) sasToken = '?' + sasToken;
+
+        const blobUrl = `https://${storageAccount.trim()}.blob.core.windows.net/${storageContainer.trim()}/${SELERI_BLOB_PREFIX}${encodeURIComponent(fileName)}${sasToken}`;
+
+        try {
+            // Step 1: Delete from Blob Storage
+            const response = await fetch(blobUrl, {
+                method: 'DELETE',
+                headers: {
+                    'x-ms-version': '2024-11-04',
+                    'x-ms-date': new Date().toUTCString()
+                }
+            });
+
+            if (!response.ok && response.status !== 202 && response.status !== 404) {
+                const errorText = await response.text();
+                throw new Error(`Blob delete failed: ${response.status}: ${errorText}`);
+            }
+
+            console.log(`✅ Deleted from Blob Storage: ${fileName}`);
+
+            // Step 2: Delete from Azure AI Search (if configured)
+            const searchResult = await this.deleteFromSearch(fileName);
+            if (!searchResult.success) {
+                console.warn(`⚠️ Could not delete from AI Search: ${searchResult.error}`);
+                // Don't fail the whole operation if search delete fails
+            } else {
+                console.log(`✅ Deleted from AI Search: ${fileName}`);
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error("Azure Delete Error:", error);
+            return { success: false, error: error.message };
+        }
+    },
+
+    // Delete Document from Azure AI Search Index
+    async deleteFromSearch(fileName) {
+        const { searchEndpoint, searchIndex, searchApiKey } = SELERI_SECRETS.azure;
+
+        // If AI Search not configured, skip silently
+        if (!searchApiKey || !searchEndpoint || !searchIndex) {
+            return { success: true, skipped: true };
+        }
+
+        const url = `${searchEndpoint}/indexes/${searchIndex}/docs/index?api-version=2023-11-01`;
+
+        // Azure AI Search might use different ID formats:
+        // Try multiple common patterns
+        const possibleIds = [
+            fileName,                                    // Just filename
+            `seleri-docs/${fileName}`,                  // With prefix
+            SELERI_BLOB_PREFIX + fileName,              // With prefix constant
+            encodeURIComponent(fileName),               // URL encoded
+            btoa(fileName)                              // Base64 encoded
+        ];
+
+        try {
+            // Try to delete using all possible ID formats
+            for (const docId of possibleIds) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'api-key': searchApiKey
+                        },
+                        body: JSON.stringify({
+                            value: [{
+                                "@search.action": "delete",
+                                "id": docId
+                            }]
+                        })
+                    });
+
+                    if (response.ok) {
+                        console.log(`✅ AI Search delete succeeded with ID: ${docId}`);
+                        return { success: true };
+                    }
+                } catch (e) {
+                    // Continue trying other ID formats
+                    continue;
+                }
+            }
+
+            // If all attempts failed, log warning but don't fail
+            console.warn(`⚠️ Could not delete from AI Search. Tried IDs:`, possibleIds);
+            return { success: false, error: 'Could not find document in search index' };
+        } catch (error) {
+            console.error("AI Search Delete Error:", error);
+            return { success: false, error: error.message };
+        }
+    },
+
     // Fetch actual document content from Blob Storage
     async getDocumentContents() {
         const { storageAccount, storageContainer, storageSasToken } = SELERI_SECRETS.azure;
