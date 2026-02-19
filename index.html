@@ -16,6 +16,27 @@
 </head>
 
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <svg class="loading-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Stylized Celery Stalk Logo -->
+                <path d="M45 85C45 85 40 60 40 40C40 30 45 20 50 15C55 20 60 30 60 40C60 60 55 85 55 85"
+                    stroke="currentColor" stroke-width="8" stroke-linecap="round" />
+                <path d="M35 80C35 80 25 65 25 50C25 40 30 30 35 25" stroke="currentColor" stroke-width="6"
+                    stroke-linecap="round" />
+                <path d="M65 80C65 80 75 65 75 50C75 40 70 30 65 25" stroke="currentColor" stroke-width="6"
+                    stroke-linecap="round" />
+                <!-- Leafy tops -->
+                <circle cx="50" cy="15" r="4" fill="currentColor" />
+                <circle cx="35" cy="25" r="3" fill="currentColor" />
+                <circle cx="65" cy="25" r="3" fill="currentColor" />
+            </svg>
+            <h2 class="loading-text">Seleri</h2>
+            <p class="loading-tagline" id="loadingTagline"></p>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
@@ -107,11 +128,6 @@
                         Vi kombinerar specialistkunskap inom lön med vårt konsultativa förhållningssätt,
                         där fokus ligger på att skapa värde för både HR, ekonomi och verksamheten.
                     </p>
-                    <ul class="service-features">
-                        <li>✓ Kvalitetssäkring av processer</li>
-                        <li>✓ Relation mellan HR och ekonomi</li>
-                        <li>✓ Stöttning av ledning</li>
-                    </ul>
                     <a href="payroll-business-partner.html" class="service-link">Läs mer →</a>
                 </div>
 
@@ -127,11 +143,6 @@
                         Vi kombinerar djup förståelse för lön med ekonomisk analys och styrning för att
                         leverera kunskap och rätt beslutsunderlag till ledningen.
                     </p>
-                    <ul class="service-features">
-                        <li>✓ Analys av lönekostnader</li>
-                        <li>✓ Budget- och prognosarbete</li>
-                        <li>✓ Förbättrad rapportering</li>
-                    </ul>
                     <a href="payroll-business-controller.html" class="service-link">Läs mer →</a>
                 </div>
 
@@ -146,11 +157,6 @@
                         Få trygghet och precision i varje löneutbetalning. Vi tar rollen som er löneavdelning
                         och säkrar att löneutbetalningen fungerar.
                     </p>
-                    <ul class="service-features">
-                        <li>✓ Rätt lön i rätt tid</li>
-                        <li>✓ Digitala processer</li>
-                        <li>✓ Kontinuerlig förbättring</li>
-                    </ul>
                     <a href="lonehantering.html" class="service-link">Läs mer →</a>
                 </div>
 
@@ -166,11 +172,6 @@
                         Vi erbjuder utbildningar som ger dig och ditt företag trygghet, uppdaterad kunskap
                         och verktyg för att hantera hela er personaladministration.
                     </p>
-                    <ul class="service-features">
-                        <li>✓ Agda PS utbildning</li>
-                        <li>✓ Lönespecialist-kurser</li>
-                        <li>✓ Skräddarsydda program</li>
-                    </ul>
                     <a href="utbildning.html" class="service-link">Läs mer →</a>
                 </div>
             </div>
@@ -278,6 +279,12 @@
                         <p><a href="https://maps.google.com/?q=Nolgårdsvägen+15,+663+41+Hammarö" target="_blank"
                                 rel="noopener noreferrer">Nolgårdsvägen 15<br>663 41 Hammarö</a></p>
                     </div>
+                    <div class="info-card">
+                        <h4>LinkedIn</h4>
+                        <p><a href="https://www.linkedin.com/company/seleri/" target="_blank"
+                                rel="noopener noreferrer">Följ oss på LinkedIn</a></p>
+                        <span class="info-note">Senaste uppdateringar</span>
+                    </div>
                 </div>
 
                 <div class="contact-form-container">
@@ -310,21 +317,21 @@
                 <h3 class="team-title">Vårt team</h3>
                 <div class="team-grid">
                     <div class="team-member">
-                        <div class="member-avatar">CF</div>
+                        <img src="images/team/Caroline Fjellman bild.webp" alt="Caroline Fjellman" class="member-photo">
                         <h4>Caroline Fjellman</h4>
                         <p class="member-role">Auktoriserad Lönekonsult</p>
                         <a href="mailto:caroline@seleri.se" class="member-link">caroline@seleri.se</a>
                         <a href="tel:054524660" class="member-link">054-524 660</a>
                     </div>
                     <div class="team-member">
-                        <div class="member-avatar">JB</div>
+                        <img src="images/team/Josefine Bergström bild.webp" alt="Josefine Bergström" class="member-photo">
                         <h4>Josefine Bergström</h4>
                         <p class="member-role">Löneassistent</p>
                         <a href="mailto:josefine@seleri.se" class="member-link">josefine@seleri.se</a>
                         <a href="tel:054524625" class="member-link">054-524 625</a>
                     </div>
                     <div class="team-member">
-                        <div class="member-avatar">FH</div>
+                        <img src="images/team/Filippa Hasewinkel.jpg" alt="Filippa Hasewinkel" class="member-photo">
                         <h4>Filippa Hasewinkel</h4>
                         <p class="member-role">Löneassistent</p>
                         <a href="mailto:filippa@seleri.se" class="member-link">filippa@seleri.se</a>
@@ -336,7 +343,7 @@
                         <a href="mailto:svea@seleri.se" class="member-link">svea@seleri.se</a>
                     </div>
                     <div class="team-member">
-                        <div class="member-avatar">TG</div>
+                        <img src="images/team/Therese Göthesson.webp" alt="Therese Göthesson" class="member-photo">
                         <h4>Therese Göthesson</h4>
                         <p class="member-role">Trainee</p>
                         <a href="mailto:therese@seleri.se" class="member-link">therese@seleri.se</a>
@@ -456,9 +463,45 @@
         </div>
     </div>
 
+    <!-- Loading Screen Script -->
+    <script>
+        // Typewriter effect
+        function typeWriter(element, text, speed) {
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const tagline = document.getElementById('loadingTagline');
+
+            // Start typewriter after logo has faded in (600ms delay)
+            setTimeout(function() {
+                typeWriter(tagline, 'Rätt lön i rätt tid, till rätt kvalitet', 50);
+            }, 600);
+
+            // Wait 3500ms for smooth experience (time to read the tagline)
+            setTimeout(function() {
+                loadingScreen.classList.add('fade-out');
+                // Remove from DOM after fade completes
+                setTimeout(function() {
+                    loadingScreen.remove();
+                }, 500);
+            }, 3500);
+        });
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-    <script src="secrets.js"></script>
+    <script src="secrets.js" onerror="console.log('secrets.js not found, using auth.js fallback')"></script>
+    <script src="auth.js"></script>
     <script src="system-prompt.js"></script>
     <script src="azure_integration.js"></script>
     <script src="script.js"></script>

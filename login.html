@@ -11,7 +11,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <script src="secrets.js"></script>
+    <script src="secrets.js" onerror="console.log('secrets.js not found, using auth.js fallback')"></script>
+    <script src="auth.js"></script>
     <style>
         body {
             background-color: var(--bg-secondary);
@@ -247,8 +248,9 @@
             const pass = document.getElementById('password').value;
             const alertBox = document.getElementById('loginAlert');
 
-            // Use secrets from secrets.js (which mimics Azure Key Vault/App Settings)
-            const secrets = (typeof SELERI_SECRETS !== 'undefined') ? SELERI_SECRETS : {
+            // Use secrets from secrets.js (local) or auth.js (GitHub Pages fallback)
+            const secrets = (typeof SELERI_SECRETS !== 'undefined') ? SELERI_SECRETS :
+                            (typeof SELERI_AUTH !== 'undefined') ? SELERI_AUTH : {
                 customer: { username: '', password: '' },
                 admin: { username: '', password: '' }
             };
