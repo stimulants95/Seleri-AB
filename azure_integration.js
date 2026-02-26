@@ -237,23 +237,52 @@ const AzureIntegration = {
                     const isPdf = doc.name.toLowerCase().endsWith('.pdf');
 
                     if (isPdf && typeof pdfjsLib !== 'undefined') {
-                        // Parse PDF using PDF.js
+                        // Parse PDF using PDF.js – extract text AND render pages as images
                         console.log(`Parsing PDF: ${doc.name}`);
                         const response = await fetch(blobUrl, {
                             headers: { 'x-ms-version': '2024-11-04' }
                         });
                         const arrayBuffer = await response.arrayBuffer();
                         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+                        // Ensure global image registry exists
+                        if (!window._pdfPageImages) window._pdfPageImages = {};
+
+                        const docBaseName = doc.name.replace(/\.pdf$/i, '').replace(/\s+/g, '_');
                         let fullText = '';
+
                         for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
+
+                            // 1) Extract text
                             const textContent = await page.getTextContent();
                             const pageText = textContent.items.map(item => item.str).join(' ');
                             fullText += pageText + '\n';
+
+                            // 2) Render page to canvas → data URL
+                            try {
+                                const scale = 1.5;
+                                const viewport = page.getViewport({ scale });
+                                const canvas = document.createElement('canvas');
+                                canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+                                const ctx = canvas.getContext('2d');
+                                await page.render({ canvasContext: ctx, viewport }).promise;
+
+                                const imageId = `${docBaseName}_sida_${i}`;
+                                window._pdfPageImages[imageId] = canvas.toDataURL('image/png');
+
+                                // Insert image marker so the AI knows about this page image
+                                fullText += `[Bild: ${imageId}]\n`;
+                                console.log(`🖼️ Rendered page ${i} as image: ${imageId}`);
+                            } catch (renderErr) {
+                                console.warn(`Could not render page ${i} of ${doc.name}:`, renderErr);
+                            }
                         }
+
                         if (fullText.trim().length > 0) {
                             contents.push(`--- Dokument: ${doc.name} ---\n${fullText.substring(0, 15000)}`);
-                            console.log(`PDF parsed: ${doc.name} (${fullText.length} chars, ${pdf.numPages} pages)`);
+                            console.log(`PDF parsed: ${doc.name} (${fullText.length} chars, ${pdf.numPages} pages, ${Object.keys(window._pdfPageImages).length} images)`);
                         }
                     } else {
                         // Try reading as text
