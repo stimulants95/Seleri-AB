@@ -473,19 +473,30 @@
             const loadingScreen = document.getElementById('loadingScreen');
             const tagline = document.getElementById('loadingTagline');
 
-            // Start typewriter after logo has faded in (600ms delay)
-            setTimeout(function() {
-                typeWriter(tagline, 'Rätt lön i rätt tid, till rätt kvalitet', 50);
-            }, 600);
+            // Check if user has visited before
+            const hasVisited = localStorage.getItem('seleri_visited');
 
-            // Wait 3500ms for smooth experience (time to read the tagline)
-            setTimeout(function() {
-                loadingScreen.classList.add('fade-out');
-                // Remove from DOM after fade completes
+            if (hasVisited) {
+                // User has visited before - skip loading animation
+                loadingScreen.remove();
+            } else {
+                // First visit - show loading animation
+                // Start typewriter after logo has faded in (600ms delay)
                 setTimeout(function() {
-                    loadingScreen.remove();
-                }, 500);
-            }, 3500);
+                    typeWriter(tagline, 'Rätt lön i rätt tid, till rätt kvalitet', 50);
+                }, 600);
+
+                // Wait 3500ms for smooth experience (time to read the tagline)
+                setTimeout(function() {
+                    loadingScreen.classList.add('fade-out');
+                    // Remove from DOM after fade completes
+                    setTimeout(function() {
+                        loadingScreen.remove();
+                        // Mark that user has visited
+                        localStorage.setItem('seleri_visited', 'true');
+                    }, 500);
+                }, 3500);
+            }
         });
     </script>
 

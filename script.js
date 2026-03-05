@@ -188,8 +188,13 @@ quickReplies.forEach(button => {
             typingMsg.innerHTML = `
                 <div class="message-avatar">AI</div>
                 <div class="message-content">
-                    <div class="typing-indicator">
-                        <span></span><span></span><span></span>
+                    <style>
+                        @keyframes cBounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+                    </style>
+                    <div style="display:flex;align-items:center;gap:6px;padding:6px 0;">
+                        <span style="display:block;width:10px;height:10px;border-radius:50%;background:#333;animation:cBounce 1.4s infinite ease-in-out both;animation-delay:0s;"></span>
+                        <span style="display:block;width:10px;height:10px;border-radius:50%;background:#333;animation:cBounce 1.4s infinite ease-in-out both;animation-delay:0.16s;"></span>
+                        <span style="display:block;width:10px;height:10px;border-radius:50%;background:#333;animation:cBounce 1.4s infinite ease-in-out both;animation-delay:0.32s;"></span>
                     </div>
                 </div>
             `;
@@ -281,8 +286,13 @@ if (chatForm) {
         typingMsg.innerHTML = `
             <div class="message-avatar">AI</div>
             <div class="message-content">
-                <div class="typing-indicator">
-                    <span></span><span></span><span></span>
+                <style>
+                    @keyframes cBounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+                </style>
+                <div style="display:flex;align-items:center;gap:6px;padding:6px 0;">
+                    <span style="display:block;width:10px;height:10px;border-radius:50%;background:#333;animation:cBounce 1.4s infinite ease-in-out both;animation-delay:0s;"></span>
+                    <span style="display:block;width:10px;height:10px;border-radius:50%;background:#333;animation:cBounce 1.4s infinite ease-in-out both;animation-delay:0.16s;"></span>
+                    <span style="display:block;width:10px;height:10px;border-radius:50%;background:#333;animation:cBounce 1.4s infinite ease-in-out both;animation-delay:0.32s;"></span>
                 </div>
             </div>
         `;
@@ -379,23 +389,84 @@ function renderMarkdown(text) {
     // Italic: _text_ → <em> (but not in URLs)
     html = html.replace(/(?<!\w)_(.+?)_(?!\w)/g, '<em>$1</em>');
 
-    // Bullet lists: - item or • item → <li>
-    html = html.replace(/^[\-•] (.+)$/gm, '<li>$1</li>');
-    // Wrap consecutive <li> in <ul>
-    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
-
-    // Numbered lists: 1. item → <li>
-    html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+    // Build nested lists (bullet and numbered) by parsing indentation
+    html = (function (input) {
+        var lines = input.split('\n');
+        var result = [];
+        var i = 0;
+        while (i < lines.length) {
+            var line = lines[i];
+            // Check if this line is a list item (bullet or numbered)
+            var bulletMatch = line.match(/^(\s*)([\-•])\s+(.+)$/);
+            var numMatch = !bulletMatch ? line.match(/^(\s*)\d+\.\s+(.+)$/) : null;
+            if (bulletMatch || numMatch) {
+                // Collect all consecutive list lines
+                var listLines = [];
+                while (i < lines.length) {
+                    var l = lines[i];
+                    var bm = l.match(/^(\s*)([\-•])\s+(.+)$/);
+                    var nm = !bm ? l.match(/^(\s*)\d+\.\s+(.+)$/) : null;
+                    if (bm) {
+                        listLines.push({ indent: bm[1].length, content: bm[3], type: 'ul' });
+                        i++;
+                    } else if (nm) {
+                        listLines.push({ indent: nm[1].length, content: nm[2], type: 'ol' });
+                        i++;
+                    } else if (lines[i].trim() === '') {
+                        // blank line might separate list groups
+                        if (i + 1 < lines.length) {
+                            var nextBm = lines[i + 1].match(/^(\s*)([\-•])\s+(.+)$/);
+                            var nextNm = !nextBm ? lines[i + 1].match(/^(\s*)\d+\.\s+(.+)$/) : null;
+                            if (nextBm || nextNm) { i++; continue; }
+                        }
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+                // Build nested HTML from listLines
+                var out = '';
+                var stack = []; // stack of { tag: 'ul'|'ol', indent }
+                for (var j = 0; j < listLines.length; j++) {
+                    var item = listLines[j];
+                    var tag = item.type;
+                    while (stack.length > 0 && item.indent < stack[stack.length - 1].indent) {
+                        out += '</li></' + stack.pop().tag + '>';
+                    }
+                    if (stack.length === 0 || item.indent > stack[stack.length - 1].indent) {
+                        out += '<' + tag + '>';
+                        stack.push({ tag: tag, indent: item.indent });
+                    } else {
+                        // same level
+                        out += '</li>';
+                    }
+                    out += '<li>' + item.content;
+                }
+                // close remaining tags
+                while (stack.length > 0) {
+                    out += '</li></' + stack.pop().tag + '>';
+                }
+                result.push(out);
+            } else {
+                result.push(line);
+                i++;
+            }
+        }
+        return result.join('\n');
+    })(html);
 
     // Line breaks: double newline → paragraph break
     html = html.replace(/\n\n/g, '</p><p>');
     // Single newlines (not inside lists) → <br>
     html = html.replace(/\n/g, '<br>');
 
-    // Clean up <br> inside <ul>
+    // Clean up <br> inside <ul> and <ol>
     html = html.replace(/<br><ul>/g, '<ul>');
     html = html.replace(/<\/ul><br>/g, '</ul>');
     html = html.replace(/<br><\/ul>/g, '</ul>');
+    html = html.replace(/<br><ol>/g, '<ol>');
+    html = html.replace(/<\/ol><br>/g, '</ol>');
+    html = html.replace(/<br><\/ol>/g, '</ol>');
     html = html.replace(/<br><li>/g, '<li>');
 
     // Wrap in paragraph
@@ -481,7 +552,7 @@ document.querySelectorAll('.service-card, .testimonial-card, .about-feature, .vi
 
 const testimonials = [
     {
-        text: "De känms mer som vår egen löneavdelning än som en extern konsult. Vi kan alltid vända oss till Seleri med frågor och funderingar.",
+        text: "De känns mer som vår egen löneavdelning än som en extern konsult. Vi kan alltid vända oss till Seleri med frågor och funderingar.",
         author: "Jenny Svenkvist",
         title: "CFO, Combi Wear Parts AB",
         avatar: "JS"
