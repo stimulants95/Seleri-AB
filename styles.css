@@ -1788,8 +1788,80 @@ body {
 }
 
 /* ==================== */
-/* Image Lightbox       */
+/* Chat Video Cards     */
 /* ==================== */
+
+.chat-video-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--text-primary);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.chat-video-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(168, 139, 87, 0.3);
+}
+
+.chat-video-card:hover .chat-video-play {
+    background: rgba(197, 176, 134, 0.95);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.chat-video-thumb {
+    position: relative;
+    width: 120px;
+    min-width: 120px;
+    height: 68px;
+    border-radius: var(--radius-sm);
+    background-size: cover;
+    background-position: center;
+    background-color: #000;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.chat-video-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    background: rgba(168, 139, 87, 0.85);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.chat-video-play svg {
+    width: 16px;
+    height: 16px;
+    margin-left: 2px;
+}
+
+.chat-video-title {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+
 
 .image-lightbox-overlay {
     position: fixed;

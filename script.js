@@ -346,6 +346,28 @@ function renderMarkdown(text) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 
+    // Image references: ![alt](page-image:id) → <img> with data URL from registry
+    // After HTML escaping, the pattern looks like: ![alt](page-image:id) (unchanged, no special chars)
+    html = html.replace(/!\[([^\]]*)\]\(page-image:([^)]+)\)/g, function (match, alt, id) {
+        var src = window._pdfPageImages && window._pdfPageImages[id.trim()];
+        if (src) {
+            return '<div class="chat-image-wrapper"><img src="' + src + '" alt="' + alt + '" class="chat-page-image" onclick="openImageLightbox(this.src, \'' + alt.replace(/'/g, "\\'") + '\')" /><span class="chat-image-caption">' + alt + '</span></div>';
+        }
+        return ''; // Remove the reference if image not found
+    });
+
+    // Video references: [▶ Title](youtube:VIDEO_ID) → clickable video card with thumbnail
+    html = html.replace(/\[([^\]]*)\]\(youtube:([a-zA-Z0-9_-]+)\)/g, function (match, title, videoId) {
+        var thumbUrl = 'https://img.youtube.com/vi/' + videoId.trim() + '/mqdefault.jpg';
+        var ytUrl = 'https://www.youtube.com/watch?v=' + videoId.trim();
+        return '</p><a href="' + ytUrl + '" target="_blank" rel="noopener noreferrer" class="chat-video-card">' +
+            '<div class="chat-video-thumb" style="background-image: url(\'' + thumbUrl + '\')">' +
+            '<div class="chat-video-play"><svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M8 5v14l11-7z"/></svg></div>' +
+            '</div>' +
+            '<span class="chat-video-title">' + title + '</span>' +
+            '</a><p>';
+    });
+
     // Headers: ## Header → <h3>, ### Header → <h4>
     html = html.replace(/^### (.+)$/gm, '<h4>$1</h4>');
     html = html.replace(/^## (.+)$/gm, '<h3>$1</h3>');
@@ -383,7 +405,26 @@ function renderMarkdown(text) {
     html = html.replace(/<p><\/p>/g, '');
     html = html.replace(/<p><br><\/p>/g, '');
 
+    // Clean p tags wrapping block elements (video cards, images)
+    html = html.replace(/<p>\s*(<a class="chat-video-card")/g, '$1');
+    html = html.replace(/(<\/a>)\s*<\/p>/g, '$1');
+    html = html.replace(/<p>\s*(<div class="chat-image-wrapper")/g, '$1');
+    html = html.replace(/(<\/div>)\s*<\/p>/g, '$1');
+
     return html;
+}
+
+// Lightbox for chat images
+function openImageLightbox(src, alt) {
+    var overlay = document.createElement('div');
+    overlay.className = 'image-lightbox-overlay';
+    overlay.innerHTML = '<div class="image-lightbox-content"><img src="' + src + '" alt="' + alt + '" /><p>' + alt + '</p><button class="image-lightbox-close">&times;</button></div>';
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay || e.target.classList.contains('image-lightbox-close')) {
+            overlay.remove();
+        }
+    });
+    document.body.appendChild(overlay);
 }
 
 

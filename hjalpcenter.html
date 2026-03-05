@@ -115,6 +115,25 @@
             margin-left: 4px;
         }
 
+        .video-info {
+            padding: var(--spacing-lg);
+        }
+
+        .video-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1.5;
+            min-height: 3em; /* Reserve space for 2 lines while loading */
+        }
+
+        .video-title.loading {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
             .video-grid {
                 grid-template-columns: 1fr;
@@ -214,7 +233,7 @@
                 </p>
 
                 <div class="video-grid">
-                    <a href="https://www.youtube.com/watch?v=bRVDcqmO_vY" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=bRVDcqmO_vY" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="bRVDcqmO_vY">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/bRVDcqmO_vY/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -222,8 +241,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=W2sdLHlsLPI" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=W2sdLHlsLPI" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="W2sdLHlsLPI">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/W2sdLHlsLPI/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -231,8 +253,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=CAUQXxq_fAI" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=CAUQXxq_fAI" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="CAUQXxq_fAI">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/CAUQXxq_fAI/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -240,8 +265,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=IY6Hrocwe9o" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=IY6Hrocwe9o" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="IY6Hrocwe9o">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/IY6Hrocwe9o/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -249,8 +277,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=rDao4RryY4M" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=rDao4RryY4M" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="rDao4RryY4M">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/rDao4RryY4M/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -258,8 +289,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=6ngExJ0T72E" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=6ngExJ0T72E" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="6ngExJ0T72E">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/6ngExJ0T72E/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -267,8 +301,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=1J6m00EU678" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=1J6m00EU678" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="1J6m00EU678">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/1J6m00EU678/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -276,8 +313,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=5_CJmsM2c3M" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=5_CJmsM2c3M" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="5_CJmsM2c3M">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/5_CJmsM2c3M/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -285,8 +325,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=0EyYZmcgoPA" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=0EyYZmcgoPA" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="0EyYZmcgoPA">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/0EyYZmcgoPA/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -294,8 +337,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=9PCMkACABn0" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=9PCMkACABn0" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="9PCMkACABn0">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/9PCMkACABn0/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -303,8 +349,11 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=Ou2UOks8EnI" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=Ou2UOks8EnI" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="Ou2UOks8EnI">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/Ou2UOks8EnI/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
@@ -312,14 +361,20 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
+                        </div>
                     </a>
-                    <a href="https://www.youtube.com/watch?v=70zS6_ZQZRg" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <a href="https://www.youtube.com/watch?v=70zS6_ZQZRg" target="_blank" rel="noopener noreferrer" class="video-card" data-video-id="70zS6_ZQZRg">
                         <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/70zS6_ZQZRg/hqdefault.jpg');">
                             <div class="play-button">
                                 <svg viewBox="0 0 24 24" fill="white">
                                     <path d="M8 5v14l11-7z"/>
                                 </svg>
                             </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title loading">Laddar videotitel...</h3>
                         </div>
                     </a>
                 </div>
@@ -429,7 +484,45 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+    <script src="secrets.js" onerror="console.log('secrets.js not found, using fallbacks')"></script>
+    <script src="auth.js"></script>
+    <script src="config.js"></script>
+    <script src="system-prompt.js"></script>
+    <script src="azure_integration.js"></script>
     <script src="script.js"></script>
+
+    <!-- Video Title Fetcher -->
+    <script>
+        // Automatically fetch YouTube video titles using oEmbed API
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoCards = document.querySelectorAll('.video-card[data-video-id]');
+
+            videoCards.forEach(async (card) => {
+                const videoId = card.getAttribute('data-video-id');
+                const titleElement = card.querySelector('.video-title');
+
+                try {
+                    // Fetch video metadata from YouTube oEmbed API
+                    const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        titleElement.textContent = data.title;
+                        titleElement.classList.remove('loading');
+                    } else {
+                        titleElement.textContent = 'Videoguide';
+                        titleElement.classList.remove('loading');
+                    }
+                } catch (error) {
+                    console.warn('Could not fetch title for video:', videoId);
+                    titleElement.textContent = 'Videoguide';
+                    titleElement.classList.remove('loading');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
