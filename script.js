@@ -64,10 +64,17 @@ const navLinks = document.querySelectorAll('.nav-link');
 window.addEventListener('scroll', () => {
     if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
+        navbar.classList.remove('hero-nav');
     } else {
         navbar.classList.remove('scrolled');
+        navbar.classList.add('hero-nav');
     }
 });
+
+// Set initial navbar state
+if (window.scrollY <= 50) {
+    navbar.classList.add('hero-nav');
+}
 
 // Mobile menu toggle
 navToggle.addEventListener('click', () => {
